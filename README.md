@@ -26,8 +26,7 @@ Open these ports in your firewall/router for proper server operation:
 | Purpose         | Port (default) | Protocol |
 |-----------------|---------------|----------|
 | Game server     | 7777          | UDP      |
-| Query port      | 7778          | UDP      |
-| Steam server    | 7779          | UDP      |
+| Query port      | 27015         | UDP      |
 
 > **Note:** If you change ports in `SettingServer.ini`, open the corresponding ports.
 
@@ -84,8 +83,7 @@ Edit `SettingServer.ini` for main parameters:
 ```ini
 APP_ID=3792580
 SERVER_PORT=7777
-QUERY_PORT=7778
-STEAM_SERVER_PORT=7779
+QUERY_PORT=27015
 MAX_PLAYERS=128
 LINKS_DIR=%USERPROFILE%\Desktop
 CONFIG_LINK_PATH=
@@ -129,8 +127,7 @@ You can use environment variables (e.g., `%USERPROFILE%`).
 | Назначение      | Порт (по умолчанию) | Протокол |
 |-----------------|---------------------|----------|
 | Игровой сервер  | 7777                | UDP      |
-| Query порт      | 7778                | UDP      |
-| Steam сервер    | 7779                | UDP      |
+| Query порт      | 27015               | UDP      |
 
 > **Важно:** Если вы меняете порты в `SettingServer.ini`, откройте соответствующие порты.
 
@@ -187,8 +184,7 @@ powershell -File scum_server_manager.ps1 -Mode register-tasks
 ```ini
 APP_ID=3792580
 SERVER_PORT=7777
-QUERY_PORT=7778
-STEAM_SERVER_PORT=7779
+QUERY_PORT=27015
 MAX_PLAYERS=128
 LINKS_DIR=%USERPROFILE%\Desktop
 CONFIG_LINK_PATH=
@@ -202,7 +198,6 @@ RESTART_TIMES=06:00,12:00,18:00,00:00
 
 ## 🌐 Полезные ссылки
 - [Официальный Discord SCUM](https://discord.gg/scum)
-
 
 ---
 
