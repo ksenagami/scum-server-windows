@@ -192,10 +192,17 @@ function Start-Server {
 }
 
 function Stop-Server {
-    $proc = Get-Process -Name SCUMServer -ErrorAction SilentlyContinue
-    if ($proc) {
-        Write-Status "[INFO] Stopping SCUMServer.exe..." Cyan
-        Stop-Process -Id $proc.Id -Force
+    $procs = Get-Process -Name SCUMServer -ErrorAction SilentlyContinue
+    if ($procs) {
+        Write-Status "[INFO] Stopping all SCUMServer.exe processes..." Cyan
+        foreach ($proc in $procs) {
+            try {
+                Stop-Process -Id $proc.Id -Force
+                Write-Status "[OK] Stopped process ID $($proc.Id)" Green
+            } catch {
+                Write-Status "[ERROR] Failed to stop process ID $($proc.Id): $_" Red
+            }
+        }
         Start-Sleep -Seconds 5
     }
 }
