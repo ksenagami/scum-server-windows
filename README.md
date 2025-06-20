@@ -235,4 +235,60 @@ powershell -File scum_server_manager.ps1 -Mode web
 
 ---
 
+# 🇬🇧 English summary
+
+**SCUM Dedicated Server Manager for Windows**
+
+- Automatic install and update of SCUM server via SteamCMD
+- Update check before every start
+- Auto-restart on crash (watch mode)
+- Scheduled restarts (06:00, 12:00, 18:00, 00:00)
+- Autostart with Windows (Task Scheduler)
+- Flexible backup system:
+  - If server is stopped: full backup of game data, config, and script
+  - If server is running: backup only config.json and script (with warning)
+  - Rotation: only 10 latest backups are kept
+- Restore from backup (latest or by name, only if server is stopped)
+- Log rotation: old logs deleted automatically
+- Discord notifications for all key events (via webhook, as embed)
+- Web interface: manage server and view logs/status at http://localhost:8080
+- Self-update: update script from URL in config.json
+- Statistics: uptime, restarts, backups, errors (send-stats mode)
+- User hooks: before/after backup and restart scripts
+- `stop` command: graceful server shutdown
+- All settings in config.json
+- RCON: currently disabled (code preserved for future use)
+
+**Main modes:**
+- start
+- stop
+- restart
+- watch
+- register-tasks
+- backup
+- restore-backup
+- send-stats
+- self-update
+- web
+- help
+- rcon-test (disabled)
+
+**Examples:**
+```powershell
+powershell -File scum_server_manager.ps1 -Mode start
+powershell -File scum_server_manager.ps1 -Mode stop
+powershell -File scum_server_manager.ps1 -Mode restart
+powershell -File scum_server_manager.ps1 -Mode backup
+powershell -File scum_server_manager.ps1 -Mode restore-backup
+powershell -File scum_server_manager.ps1 -Mode restore-backup -BackupName scum_backup_2024-06-20_12-00-00.zip
+powershell -File scum_server_manager.ps1 -Mode send-stats
+powershell -File scum_server_manager.ps1 -Mode self-update
+powershell -File scum_server_manager.ps1 -Mode web
+```
+
+**Important:**
+- For full backup, stop the server first.
+- Restore is only possible if the server is stopped.
+- RCON features are currently disabled (code is preserved for future use, rcon.exe is not auto-downloaded).
+
 **Удачной игры и стабильного сервера!** 
