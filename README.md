@@ -237,8 +237,33 @@ powershell -File scum_server_manager.ps1 -Mode web
 
 # 📖 Подробная инструкция (RU)
 
-## Основные режимы и команды
+## Возможности
+- Автоматическая установка и обновление сервера SCUM через SteamCMD
+- Проверка обновлений перед каждым запуском
+- Автоматический перезапуск при сбоях (watch)
+- Плановые рестарты (настраиваются, по умолчанию: 06:00, 12:00, 18:00, 00:00)
+- Автозапуск с Windows (Task Scheduler)
+- Создание симлинков к важным папкам (опционально)
+- Гибкая система бэкапов:
+  - Полный бэкап игровых данных, конфига и скрипта, если сервер остановлен
+  - Если сервер работает — архивируются только config.json и скрипт (с предупреждением)
+  - Ротация: хранится только 10 последних бэкапов
+  - Бэкап перед каждым рестартом (с пометкой _restart)
+  - Проверка свободного места (не менее 5 ГБ)
+- Восстановление из бэкапа (последний или по имени, только при остановленном сервере)
+- Ротация логов: удаление старше 30 дней
+- Discord-уведомления обо всех ключевых событиях (webhook, embed)
+- Веб-интерфейс: управление сервером и просмотр логов/статуса через http://localhost:8080
+- Self-update: обновление скрипта из официального репозитория (настраиваемый URL)
+- Статистика: аптайм, рестарты, бэкапы, ошибки (send-stats)
+- Пользовательские хуки: before/after backup и restart
+- Все настройки в config.json
+- Команда stop: корректное завершение сервера
+- Команда help: справка и примеры
+- rcon-test: (отключено) тестовое RCON-уведомление игрокам
+- RCON: временно отключён (код сохранён для будущего)
 
+## Основные режимы и команды
 | Режим              | Описание |
 |--------------------|----------|
 | `start`            | Устанавливает сервер (если нужно), проверяет обновления, создает симлинки (если включено), запускает сервер. Используйте для первого запуска или обычного старта. |
@@ -314,12 +339,43 @@ powershell -File scum_server_manager.ps1 -Mode web
 - Логи старше 30 дней удаляются автоматически.
 - Бэкапы — только 10 последних.
 
+## Ограничения и примечания
+- Для полного бэкапа сервер должен быть остановлен.
+- Восстановление возможно только при остановленном сервере.
+- RCON временно отключён (код сохранён для будущего, rcon.exe не скачивается).
+- Все настройки — через config.json.
+
 ---
 
 # 📖 Detailed Manual (EN)
 
-## Main modes and commands
+## Features
+- Automatic install and update of SCUM server via SteamCMD
+- Update check before every start
+- Auto-restart on crash (watch mode)
+- Scheduled restarts (customizable, default: 06:00, 12:00, 18:00, 00:00)
+- Autostart with Windows (Task Scheduler)
+- Symlink creation for important folders (optional)
+- Flexible backup system:
+  - Full backup of game data, config, and script if server is stopped
+  - If server is running, only config.json and script are backed up (with warning)
+  - Rotation: only 10 latest backups are kept
+  - Backup before every restart (with _restart tag)
+  - Free space check (at least 5 GB required)
+- Restore from backup (latest or by name, only if server is stopped)
+- Log rotation: logs older than 30 days are deleted automatically
+- Discord notifications for all key events (via webhook, as embed)
+- Web interface: manage server and view logs/status at http://localhost:8080
+- Self-update: update script from official repository (configurable URL)
+- Statistics: uptime, restarts, backups, errors (send-stats mode)
+- User hooks: before/after backup and restart scripts
+- All settings in config.json
+- `stop` command: graceful server shutdown
+- `help` command: detailed help and usage examples
+- `rcon-test`: (disabled) Test RCON announcement to players
+- RCON: currently disabled (code preserved for future use)
 
+## Main modes and commands
 | Mode               | Description |
 |--------------------|-------------|
 | `start`            | Installs the server (if needed), checks for updates, creates symlinks (if enabled), starts the server. Use for first launch or normal start. |
@@ -394,5 +450,11 @@ powershell -File scum_server_manager.ps1 -Mode web
 ## Log and backup rotation
 - Logs older than 30 days are deleted automatically.
 - Only 10 latest backups are kept.
+
+## Limitations and notes
+- For full backup, stop the server first.
+- Restore is only possible if the server is stopped.
+- RCON features are currently disabled (code is preserved for future use, rcon.exe is not auto-downloaded).
+- All settings are managed via config.json.
 
 ---
