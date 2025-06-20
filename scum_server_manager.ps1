@@ -32,8 +32,7 @@ if (-not (Test-Path $configFile)) {
     @"
 APP_ID=3792580
 SERVER_PORT=7777
-QUERY_PORT=7778
-STEAM_SERVER_PORT=7779
+QUERY_PORT=27015
 MAX_PLAYERS=128
 "@ | Set-Content $configFile -Encoding UTF8
     Write-Status "[INFO] Created default SettingServer.ini" Cyan
@@ -42,8 +41,7 @@ MAX_PLAYERS=128
 # ========== CONFIG READ ==========
 $APP_ID = "3792580"
 $SERVER_PORT = "7787"
-$QUERY_PORT = "7788"
-$STEAM_SERVER_PORT = "7789"
+$QUERY_PORT = "27015"
 $MAX_PLAYERS = "128"
 $LINKS_DIR = [Environment]::GetFolderPath('Desktop')
 $CONFIG_LINK_PATH = $null
@@ -55,7 +53,6 @@ if (Test-Path $configFile) {
         if ($_ -match "^APP_ID=(.+)$") { $APP_ID = $Matches[1] }
         elseif ($_ -match "^SERVER_PORT=(.+)$") { $SERVER_PORT = $Matches[1] }
         elseif ($_ -match "^QUERY_PORT=(.+)$") { $QUERY_PORT = $Matches[1] }
-        elseif ($_ -match "^STEAM_SERVER_PORT=(.+)$") { $STEAM_SERVER_PORT = $Matches[1] }
         elseif ($_ -match "^MAX_PLAYERS=(.+)$") { $MAX_PLAYERS = $Matches[1] }
         elseif ($_ -match "^LINKS_DIR=(.+)$") { $LINKS_DIR = $Matches[1] }
         elseif ($_ -match "^CONFIG_LINK_PATH=(.+)$") { $CONFIG_LINK_PATH = $Matches[1] }
@@ -160,7 +157,7 @@ function Start-Server {
     }
 
     Create-Links
-    $serverParams = "-log -port=$SERVER_PORT -QueryPort=$QUERY_PORT -SteamServerPort=$STEAM_SERVER_PORT -MaxPlayers=$MAX_PLAYERS"
+    $serverParams = "-log -port=$SERVER_PORT -QueryPort=$QUERY_PORT -MaxPlayers=$MAX_PLAYERS"
     $ip = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notlike '*Loopback*' -and $_.IPAddress -notlike '169.*' } | Select-Object -First 1 -ExpandProperty IPAddress)
     Write-ServerLog "Starting SCUM server..."
     Start-Process -WorkingDirectory (Split-Path $serverExe) $serverExe -ArgumentList $serverParams
@@ -319,8 +316,7 @@ function Show-Help {
     Write-Host "SettingServer.ini parameters:" -ForegroundColor Cyan
     Write-Host "  APP_ID              Steam App ID for SCUM Dedicated Server (default: 3792580)"
     Write-Host "  SERVER_PORT         Game server port (default: 7777)"
-    Write-Host "  QUERY_PORT          Query port for server browser (default: 7778)"
-    Write-Host "  STEAM_SERVER_PORT   Steam server port (default: 7779)"
+    Write-Host "  QUERY_PORT          Query port for server browser (default: 27015)"
     Write-Host "  MAX_PLAYERS         Maximum number of players (default: 128)"
     Write-Host "  LINKS_DIR           Directory for all symlinks (default: Desktop)"
     Write-Host "  CONFIG_LINK_PATH    Custom path for Config link (overrides LINKS_DIR for Config)"
