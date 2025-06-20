@@ -1,0 +1,5 @@
+# Ignore SCUM server binaries and configs
+server/
+steamcmd/
+server_restart.log
+ServerSettings.ini 
