@@ -1,5 +1,7 @@
 # Ignore SCUM server binaries and configs
 server/
 steamcmd/
+backups/
 server_restarts.log
-SettingServer.ini 
+stats.json
+config.json
