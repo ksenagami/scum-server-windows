@@ -113,7 +113,6 @@ function Create-Links {
 function Check-ServerUpdates {
     Write-ServerLog "Checking for server updates..."
     
-    # Получаем текущий buildid из манифеста
     $currentBuildId = $null
     if (Test-Path $manifestFile) {
         $manifest = Get-Content $manifestFile -Raw
@@ -122,7 +121,6 @@ function Check-ServerUpdates {
         }
     }
 
-    # Проверяем обновления через SteamCMD
     $updateCheckFile = Join-Path $steamcmdDir "update_check.txt"
     $steamCmdArgs = @(
         "+login anonymous",
@@ -135,7 +133,6 @@ function Check-ServerUpdates {
     $steamCmdOutput = & ".\steamcmd.exe" $steamCmdArgs | Out-String
     Pop-Location
 
-    # Извлекаем последний buildid из вывода SteamCMD
     $latestBuildId = $null
     if ($steamCmdOutput -match '"buildid"\s+"(\d+)"') {
         $latestBuildId = $Matches[1]
@@ -247,7 +244,6 @@ function Watch-Server {
         
         if (-not $proc) {
             if ($lastExitCode -ne 0) {
-                # Если предыдущий процесс завершился с ошибкой
                 Write-ServerLog "Server crashed or was terminated unexpectedly (Exit Code: $lastExitCode)" -error
             } else {
                 Write-ServerLog "Server process not found, restarting..."
@@ -263,21 +259,17 @@ function Watch-Server {
             }
             Start-Sleep -Seconds 30
         } else {
-            # Сохраняем ID процесса для проверки как он завершился
             $lastProcId = $proc.Id
-            # Ждем немного и проверяем, как завершился процесс
             Start-Sleep -Seconds 10
             try {
                 $exitedProc = Get-Process -Id $lastProcId -ErrorAction SilentlyContinue
                 if (-not $exitedProc) {
-                    # Процесс завершился, проверяем код выхода
                     $procInfo = Get-WmiObject Win32_Process -Filter "ProcessId = $lastProcId"
                     if ($procInfo) {
                         $lastExitCode = $procInfo.ExitCode
                     }
                 }
             } catch {
-                # Ошибка при получении информации о процессе
                 Write-ServerLog "Error checking process status: $_" -error
             }
         }
