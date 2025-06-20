@@ -207,7 +207,7 @@ RESTART_TIMES=06:00,12:00,18:00,00:00
 ---
 
 ## 👤 Автор
-- GitHub: [your_github](https://github.com/ksenagami)
+- GitHub: [ksenagami](https://github.com/ksenagami)
 
 ---
 
