@@ -235,45 +235,26 @@ powershell -File scum_server_manager.ps1 -Mode web
 
 ---
 
-# 🇬🇧 English summary
+# 📖 Подробная инструкция (RU)
 
-**SCUM Dedicated Server Manager for Windows**
+## Основные режимы и команды
 
-- Automatic install and update of SCUM server via SteamCMD
-- Update check before every start
-- Auto-restart on crash (watch mode)
-- Scheduled restarts (06:00, 12:00, 18:00, 00:00)
-- Autostart with Windows (Task Scheduler)
-- Flexible backup system:
-  - If server is stopped: full backup of game data, config, and script
-  - If server is running: backup only config.json and script (with warning)
-  - Rotation: only 10 latest backups are kept
-- Restore from backup (latest or by name, only if server is stopped)
-- Log rotation: old logs deleted automatically
-- Discord notifications for all key events (via webhook, as embed)
-- Web interface: manage server and view logs/status at http://localhost:8080
-- Self-update: update script from URL in config.json
-- Statistics: uptime, restarts, backups, errors (send-stats mode)
-- User hooks: before/after backup and restart scripts
-- `stop` command: graceful server shutdown
-- All settings in config.json
-- RCON: currently disabled (code preserved for future use)
+| Режим              | Описание |
+|--------------------|----------|
+| `start`            | Устанавливает сервер (если нужно), проверяет обновления, создает симлинки (если включено), запускает сервер. Используйте для первого запуска или обычного старта. |
+| `stop`             | Корректно завершает работу сервера. Рекомендуется перед бэкапом или восстановлением. |
+| `restart`          | Останавливает сервер, делает бэкап (если возможно), запускает сервер заново. Перед рестартом отправляет уведомления в Discord и (если включено) игрокам через RCON. |
+| `watch`            | Запускает мониторинг процесса SCUMServer.exe. Если сервер падает — автоматически перезапускает. Используйте для стабильной работы 24/7. |
+| `register-tasks`   | Регистрирует задачи автозапуска и плановых рестартов через Task Scheduler Windows. Требует запуск от администратора. |
+| `backup`           | Создает резервную копию данных сервера. Если сервер работает — архивируются только config.json и скрипт, иначе полный бэкап Saved. |
+| `restore-backup`   | Восстанавливает сервер из последнего или указанного бэкапа. Сервер должен быть остановлен. Старые данные удаляются. |
+| `send-stats`       | Отправляет статистику (аптайм, рестарты, бэкапы, ошибки) в Discord. |
+| `self-update`      | Обновляет скрипт до последней версии с официального репозитория. |
+| `web`              | Запускает веб-интерфейс управления сервером на http://localhost:8080. |
+| `help`             | Показывает справку по режимам и примерам запуска. |
+| `rcon-test`        | (Отключено) Тестовое RCON-уведомление игрокам. |
 
-**Main modes:**
-- start
-- stop
-- restart
-- watch
-- register-tasks
-- backup
-- restore-backup
-- send-stats
-- self-update
-- web
-- help
-- rcon-test (disabled)
-
-**Examples:**
+### Примеры запуска
 ```powershell
 powershell -File scum_server_manager.ps1 -Mode start
 powershell -File scum_server_manager.ps1 -Mode stop
@@ -286,9 +267,132 @@ powershell -File scum_server_manager.ps1 -Mode self-update
 powershell -File scum_server_manager.ps1 -Mode web
 ```
 
-**Important:**
-- For full backup, stop the server first.
-- Restore is only possible if the server is stopped.
-- RCON features are currently disabled (code is preserved for future use, rcon.exe is not auto-downloaded).
+## Описание параметров config.json
+- **APP_ID** — Steam App ID (обычно 3792580)
+- **SERVER_PORT** — порт игрового сервера
+- **MAX_PLAYERS** — максимальное число игроков
+- **NOBATTLEYE** — отключить Battleye (true/false)
+- **LINKS_DIR** — папка для симлинков (по умолчанию Desktop)
+- **CONFIG_LINK_PATH, CONSOLELOG_LINK_PATH, LOGS_LINK_PATH** — индивидуальные пути для симлинков
+- **RESTART_TIMES** — время плановых рестартов (через запятую)
+- **BACKUP_INTERVAL_HOURS** — интервал бэкапа (в часах)
+- **BACKUP_COMPRESS** — сжимать ли бэкапы в zip
+- **CREATE_LINKS** — создавать ли симлинки
+- **DISCORD_WEBHOOK_URL** — ссылка для уведомлений в Discord
+- **RCON_ENABLED, RCON_PORT, RCON_PASSWORD** — параметры RCON (временно не используются)
+- **HOOKS** — пользовательские скрипты before/after backup/restart
+- **SELF_UPDATE_URL** — ссылка для самообновления скрипта
 
-**Удачной игры и стабильного сервера!** 
+## Бэкапы и восстановление
+- Бэкап создается в папке backups. Хранится только 10 последних архивов.
+- Если сервер работает — архивируются только config.json и скрипт, игровые данные не трогаются.
+- Восстановление возможно только при остановленном сервере. Старые данные удаляются.
+- Перед рестартом автоматически создается бэкап с пометкой _restart.
+- Проверяется свободное место (не менее 5 ГБ).
+
+## Веб-интерфейс
+- Запуск: `powershell -File scum_server_manager.ps1 -Mode web`
+- Доступ: http://localhost:8080
+- Кнопки: старт, стоп, рестарт, бэкап, отправка статистики, просмотр статуса и логов.
+
+## Discord-уведомления
+- Все ключевые события отправляются в Discord через webhook (start, restart, crash, backup, ошибки, self-update, send-stats, web).
+- Все сообщения отправляются как embed.
+
+## Хуки
+- Можно указать свои скрипты для before/after backup и restart (см. HOOKS в config.json).
+
+## Self-update
+- Скрипт может обновлять себя с официального репозитория. По умолчанию SELF_UPDATE_URL уже настроен.
+- Для обновления: `powershell -File scum_server_manager.ps1 -Mode self-update`
+
+## Статистика
+- Ведется stats.json (аптайм, рестарты, бэкапы, ошибки).
+- send-stats отправляет отчет в Discord.
+
+## Ротация логов и бэкапов
+- Логи старше 30 дней удаляются автоматически.
+- Бэкапы — только 10 последних.
+
+---
+
+# 📖 Detailed Manual (EN)
+
+## Main modes and commands
+
+| Mode               | Description |
+|--------------------|-------------|
+| `start`            | Installs the server (if needed), checks for updates, creates symlinks (if enabled), starts the server. Use for first launch or normal start. |
+| `stop`             | Gracefully stops the server. Recommended before backup or restore. |
+| `restart`          | Stops the server, creates a backup (if possible), restarts the server. Sends notifications to Discord and (if enabled) to players via RCON before restart. |
+| `watch`            | Starts monitoring SCUMServer.exe. If the server crashes, it will be restarted automatically. Use for 24/7 stability. |
+| `register-tasks`   | Registers autostart and scheduled restarts via Windows Task Scheduler. Requires admin rights. |
+| `backup`           | Creates a backup of server data. If the server is running, only config.json and script are archived; otherwise, full Saved backup. |
+| `restore-backup`   | Restores the server from the latest or specified backup. Server must be stopped. Old data is deleted. |
+| `send-stats`       | Sends statistics (uptime, restarts, backups, errors) to Discord. |
+| `self-update`      | Updates the script to the latest version from the official repository. |
+| `web`              | Starts the web interface at http://localhost:8080 for server management. |
+| `help`             | Shows help for modes and usage examples. |
+| `rcon-test`        | (Disabled) Test RCON announcement to players. |
+
+### Usage examples
+```powershell
+powershell -File scum_server_manager.ps1 -Mode start
+powershell -File scum_server_manager.ps1 -Mode stop
+powershell -File scum_server_manager.ps1 -Mode restart
+powershell -File scum_server_manager.ps1 -Mode backup
+powershell -File scum_server_manager.ps1 -Mode restore-backup
+powershell -File scum_server_manager.ps1 -Mode restore-backup -BackupName scum_backup_2024-06-20_12-00-00.zip
+powershell -File scum_server_manager.ps1 -Mode send-stats
+powershell -File scum_server_manager.ps1 -Mode self-update
+powershell -File scum_server_manager.ps1 -Mode web
+```
+
+## config.json parameters
+- **APP_ID** — Steam App ID (usually 3792580)
+- **SERVER_PORT** — game server port
+- **MAX_PLAYERS** — max players
+- **NOBATTLEYE** — disable Battleye (true/false)
+- **LINKS_DIR** — folder for symlinks (default: Desktop)
+- **CONFIG_LINK_PATH, CONSOLELOG_LINK_PATH, LOGS_LINK_PATH** — custom symlink paths
+- **RESTART_TIMES** — scheduled restart times (comma-separated)
+- **BACKUP_INTERVAL_HOURS** — backup interval (hours)
+- **BACKUP_COMPRESS** — compress backups as zip
+- **CREATE_LINKS** — create symlinks
+- **DISCORD_WEBHOOK_URL** — Discord webhook for notifications
+- **RCON_ENABLED, RCON_PORT, RCON_PASSWORD** — RCON params (currently not used)
+- **HOOKS** — user scripts for before/after backup/restart
+- **SELF_UPDATE_URL** — URL for self-update
+
+## Backups and restore
+- Backups are stored in the backups folder. Only the 10 latest are kept.
+- If the server is running, only config.json and script are archived; game data is not touched.
+- Restore is only possible if the server is stopped. Old data is deleted before restore.
+- Before restart, a backup with _restart tag is created automatically.
+- Free space is checked (at least 5 GB required).
+
+## Web interface
+- Start: `powershell -File scum_server_manager.ps1 -Mode web`
+- Access: http://localhost:8080
+- Buttons: start, stop, restart, backup, send stats, view status and logs.
+
+## Discord notifications
+- All key events are sent to Discord via webhook (start, restart, crash, backup, errors, self-update, send-stats, web).
+- All messages are sent as embed.
+
+## Hooks
+- You can specify your own scripts for before/after backup and restart (see HOOKS in config.json).
+
+## Self-update
+- The script can update itself from the official repository. By default, SELF_UPDATE_URL is already set.
+- To update: `powershell -File scum_server_manager.ps1 -Mode self-update`
+
+## Statistics
+- stats.json is maintained (uptime, restarts, backups, errors).
+- send-stats sends a report to Discord.
+
+## Log and backup rotation
+- Logs older than 30 days are deleted automatically.
+- Only 10 latest backups are kept.
+
+---
