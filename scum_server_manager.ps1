@@ -285,15 +285,13 @@ function Watch-Server {
 }
 
 function Register-Tasks {
-    $thisScript = $MyInvocation.MyCommand.Definition
-    # 1. Автозапуск после перезагрузки
-    $action1 = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File '$thisScript' -Mode watch"
+    $thisScript = $PSCommandPath
+    $action1 = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$thisScript`" -Mode watch"
     $trigger1 = New-ScheduledTaskTrigger -AtStartup
     Register-ScheduledTask -TaskName "SCUMServer_AutoStart_And_Watch" -Action $action1 -Trigger $trigger1 -RunLevel Highest -Force
-    # 2. Перезапуск по расписанию
     $times = @("06:00","12:00","18:00","00:00")
     foreach ($t in $times) {
-        $action2 = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File '$thisScript' -Mode restart"
+        $action2 = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$thisScript`" -Mode restart"
         $trigger2 = New-ScheduledTaskTrigger -Daily -At $t
         Register-ScheduledTask -TaskName "SCUMServer_Restart_$($t.Replace(':','_'))" -Action $action2 -Trigger $trigger2 -RunLevel Highest -Force
     }
